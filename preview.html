@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vermilion · Typora 主题</title>
+<link id="theme" rel="stylesheet" href="vermilion-light.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  #theme-switch {
+    position: fixed; right: 18px; top: 16px; z-index: 9;
+    font: 13px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    padding: 8px 13px; border-radius: 20px; cursor: pointer;
+    border: 1px solid rgba(128,128,128,.35);
+    background: rgba(255,255,255,.55); color: #333;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  body.dark #theme-switch {
+    background: rgba(0,0,0,.35); color: #e6e0d6;
+    border-color: rgba(230,224,214,.35);
+  }
+  @media print { #theme-switch { display: none; } }
+</style>
+</head>
+<body>
+<button id="theme-switch" type="button" title="切换日间 / 夜间">Dark</button>
+<div id="write" class="markdown-body">
+<h1>Vermilion 朱砂</h1>
+<p>为 Typora 写的一对中文主题：<strong>暖纸日间 + 近黑夜间</strong>，朱砂红点睛。面向以文字为主的说明类文档：段落长、表格和引用多、加粗与列表密集、代码较少。</p>
+<h2>主题一览</h2>
+<figure class="table-fig"><table><thead><tr><th></th><th>Vermilion Light</th><th>Vermilion Dark</th></tr></thead><tbody><tr><td>文件</td><td><code>vermilion-light.css</code></td><td><code>vermilion-dark.css</code></td></tr><tr><td>页面底色</td><td><code>#f9f6ef</code>（暖奶油纸）</td><td><code>#12100f</code>（暖调近黑）</td></tr><tr><td>正文墨色</td><td><code>#26231f</code></td><td><code>#ded7cb</code></td></tr><tr><td>朱砂强调</td><td><code>#b23a2b</code></td><td><code>#e06a51</code></td></tr></tbody></table></figure>
+<p>两版共用同一套版式与层级，只换纸墨。夜间不用 <code>#000</code>：纯黑在 LCD 上发灰、字会「浮」起来，暖调近黑暗部有层次、更耐看。</p>
+<h2>排版设计</h2>
+<ul>
+<li><strong>字体分工</strong>：正文用 SF Pro Text（西文/数字）+ 苹方（中文）；标题用 Charter + Noto Serif SC（思源宋）；代码用 SF Mono + Sarasa UI SC（等距更纱，中文注释也能等宽）。西文字体不含汉字，字体栈靠回退实现中西分工，数字在表格里用 <code>tabular-nums</code> 等宽对齐。</li>
+<li><strong>行宽与行距</strong>：版心 54rem、基准字号 16px，约 49 个全角字/行，行高 1.72。</li>
+<li><strong>段落对齐</strong>：默认左对齐，字距恒定；叠加 <code>hanging-punctuation: allow-end</code>，让行末的 <code>。，、）」</code> 探出版心，右边缘更整齐。若偏好两端对齐，改 <code>--p-align: justify</code> 即可。</li>
+<li><strong>标题</strong>：h1/h2 用衬线，压一道 1px 细线，左端叠 2px 朱砂短段；h3 用 3px 朱砂竖线起头。红色只做点睛，不做色块。</li>
+<li><strong>加粗</strong>：只加墨（600 + 更深字色），<strong>不上色</strong>——加粗密集的文档里，一旦染红整页都是红的。斜体改为朱红正体，避开中文合成倾斜的丑陋字形。</li>
+<li><strong>引用块</strong>：纸白卡片 + 1px 细边 + 3px 朱砂左沿 + 10px 圆角，不整片染色。</li>
+<li><strong>表格</strong>：整张表装进浅色卡片（细边、圆角、轻投影），表头一条极淡朱砂；列数多时按列数自动缩字号与内边距，宽表尽量不横向滚动。</li>
+<li><strong>代码块</strong>：暖砂色块（比纸深一档）+ 细边，与表格的白卡在视觉上分层。</li>
+<li><strong>列表</strong>：圆点与序号用朱砂，序号等宽对齐；分隔线是居中的短横，不用通栏线。</li>
+</ul>
+<h2>安装</h2>
+<ol>
+<li>下载 <code>vermilion-light.css</code> 与 <code>vermilion-dark.css</code>。</li>
+<li>Typora → 偏好设置 → 外观 → 打开主题文件夹。</li>
+<li>把两个文件放进去，重启 Typora。</li>
+<li>在主题菜单里选择 Vermilion Light / Vermilion Dark。</li>
+</ol>
+<h2>调整</h2>
+<p>主题把常用参数都提成了变量，改 <code>:root</code> 顶部的 token 即可：</p>
+<ul>
+<li>行宽：<code>#write { max-width: 54rem }</code>，46rem 更紧凑，60rem 更宽。</li>
+<li>字号：<code>html { font-size: 16px }</code>，15px 更密，17px 更大，全篇等比缩放。</li>
+<li>行距：<code>body { line-height: 1.72 }</code>。</li>
+<li>对齐：<code>--p-align: left</code>（默认）或 <code>justify</code>。</li>
+<li>红度：只改 <code>--red</code> 和 <code>--red-deep</code>。正红用 <code>#c02b1d</code>，棕红用 <code>#9b4b31</code>，淡一点用 <code>#c4553f</code>。</li>
+<li>字体：<code>--font-sans</code> / <code>--font-serif</code> / <code>--font-mono</code>，按自己机器已装的字体调整。</li>
+</ul>
+<h2>许可</h2>
+<p>可自由使用与修改，无需署名。</p>
+</div>
+<script>
+  var btn = document.getElementById('theme-switch');
+  var link = document.getElementById('theme');
+  var dark = false;
+  btn.addEventListener('click', function () {
+    dark = !dark;
+    link.href = dark ? 'vermilion-dark.css' : 'vermilion-light.css';
+    document.body.classList.toggle('dark', dark);
+    btn.textContent = dark ? 'Light' : 'Dark';
+  });
+</script>
+</body>
+</html>
