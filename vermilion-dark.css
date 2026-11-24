@@ -1,0 +1,450 @@
+/* ==========================================================================
+   Vermilion Dark — 朱砂 · 夜
+   --------------------------------------------------------------------------
+   与 vermilion-light 同构：同一套版式、同一套层级，只换纸与墨。
+   底色 #12100f 是暖调近黑——比 #000 更耐看，暗部有层次，字不会「浮」起来。
+   朱砂在黑底上提亮到 #e06a51，保证链接、引用边、列表符号仍有足够对比。
+   字体：正文 SF Pro Text + 苹方；标题 Charter + Noto Serif SC；
+        代码 SF Mono + Sarasa UI SC。
+   ========================================================================== */
+
+:root {
+    /* ---- 纸与墨：暖调近黑，不用 #000（纯黑在 LCD 上发灰、字会「浮」） ---- */
+    --paper:        #12100f;   /* 页面底色：比纯黑暖一档，肉眼即黑 */
+    --paper-2:      #1e1b19;   /* 次级面：表头、悬停 */
+    --card:         #191614;   /* 卡片面：表格与代码块浮在底色上 */
+    --th-bg:        rgba(224, 106, 81, .11); /* 表头：极淡朱砂条 */
+    --code-bg:      #1a1613;   /* 代码块：比底色暖一档 */
+    --ink:          #f7f1e7;   /* 标题与加粗 */
+    --ink-2:        #ded7cb;   /* 正文（不用纯白，避免发光刺眼） */
+    --ink-3:        #c3baac;
+    --muted:        #9a9285;
+
+    /* ---- 朱砂：黑底上必须提亮，否则红发闷 ---- */
+    --red:          #e06a51;
+    --red-deep:     #f28d72;
+    --red-wash:     rgba(224, 106, 81, .085);
+    --mark-bg:      rgba(206, 160, 80, .30);
+
+    /* ---- 线 ---- */
+    --rule:         rgba(243, 237, 227, .145);
+    --rule-strong:  rgba(243, 237, 227, .24);
+
+    /* ---- 字体 ---- */
+    --font-sans:  -apple-system, "SF Pro Text", "PingFang SC", "Hiragino Sans GB",
+                  "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-serif: "Charter", "Noto Serif SC", "Source Han Serif SC", "Songti SC",
+                  Georgia, serif;
+    --font-mono:  "SF Mono", "Sarasa UI SC", Menlo, Monaco, Consolas,
+                  "Courier New", monospace;
+
+    /* ---- Typora 外壳变量 ---- */
+    --bg-color:                 var(--paper);
+    --text-color:               var(--ink-2);
+    --side-bar-bg-color:        #0d0c0b;
+    --control-text-color:       #a49b8e;
+    --control-text-hover-color: var(--ink);
+    --active-file-bg-color:     rgba(224, 106, 81, .14);
+    --active-file-text-color:   var(--red-deep);
+    --active-file-border-color: var(--red);
+    --item-hover-bg-color:      rgba(243, 237, 227, .055);
+    --item-hover-text-color:    var(--ink);
+    --select-text-bg-color:     rgba(224, 106, 81, .30);
+    --search-select-bg-color:   var(--mark-bg);
+    --search-select-text-color: #1a1716;
+    --primary-color:            var(--red);
+    --primary-btn-border-color: var(--red);
+    --primary-btn-text-color:   #1a1716;
+    --window-border:            1px solid var(--rule);
+    --md-char-color:            #6d655a;
+    --meta-content-color:       var(--muted);
+    --blur-text-color:          #6d655a;
+    --monospace:                var(--font-mono);
+    --mermaid-theme:            dark;
+    --code-block-bg-color:      var(--paper-2);
+    --code-block-text-color:    var(--ink-2);
+    /* 段落对齐：left = 左对齐（默认，字距最自然）｜justify = 两端对齐 */
+    --p-align:      left;
+
+    --rawblock-edit-panel-bd:   var(--rule-strong);
+}
+
+/* Typora 1.x 用的编辑器背景变量（部分版本只认这个） */
+:root { --window-bg-color: var(--paper); }
+
+/* 脚注区 */
+#write .footnotes {
+    margin-top: 3.2em;
+    padding-top: 1.1em;
+    border-top: 1px solid var(--rule);
+    font-size: .84rem;
+    line-height: 1.7;
+    color: var(--ink-3);
+}
+#write .footnotes p { margin: .3em 0; }
+#write sup.md-footnote a { text-decoration: none; font-weight: 600; }
+
+/* ---------- 基准 ---------- */
+
+html {
+    font-size: 16px;            /* 基准字号；改这一个值，全篇等比缩放 */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.72;          /* 中文行距；字小了回补一点，读起来不挤 */
+    color: var(--ink-2);
+    background-color: var(--paper);
+    font-variant-numeric: proportional-nums;
+    font-feature-settings: "kern" 1, "liga" 1;
+}
+
+#write {
+    box-sizing: border-box;
+    max-width: 54rem;           /* 扣除内边距后约 49 全角字/行：宽版心，行末字多 */
+    margin: 0 auto;
+    padding: 3rem 2.5rem 6rem;
+    color: var(--ink-2);
+}
+
+#write > *:first-child { margin-top: 0 !important; }
+
+/* ---------- 段落 ---------- */
+
+#write p {
+    margin: .86em 0;
+    text-align: var(--p-align, left);
+    /* 中文标点悬挂：行末的。，、）」不占位置，直接探出版心。
+       WebKit（Typora 的内核）支持，Chrome 不支持但会安全忽略。
+       作用有二：① 右边缘不再因为「标点被挤到下一行」而出现一个字宽的空洞；
+                 ② 因为不需要把标点塞进去，两端对齐时的拉伸量也随之变小。 */
+    hanging-punctuation: allow-end;
+    text-wrap: pretty;          /* 减少末行孤字 */
+    orphans: 3;
+    widows: 3;
+}
+
+/* 加粗：只加墨、不变色。文档里加粗极多，一旦上色整页会发红。
+   苹方可变字重 600 = Semibold，与正文 400 拉开明显。 */
+#write strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* 斜体：中文无真正的斜体字形，合成倾斜会很难看。
+   改为朱红着色，中西文一致，且符合「朱批」的气质。 */
+#write em {
+    font-style: normal;
+    color: var(--red-deep);
+}
+
+#write a {
+    color: var(--red);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(224, 106, 81, .38);
+    text-underline-offset: 3px;
+    transition: color .12s ease, text-decoration-color .12s ease;
+}
+#write a:hover {
+    color: var(--red-deep);
+    text-decoration-color: var(--red-deep);
+}
+
+#write mark {
+    background: var(--mark-bg);
+    color: var(--ink);
+    padding: .02em .14em;
+    border-radius: 2px;
+}
+
+#write sup { font-size: .72em; color: var(--red-deep); }
+
+/* ---------- 标题 ----------
+   统一的「细横线 + 朱砂短段」语言：h1 长段、h2 短段，h3 用方块。
+   background-size 那段即压在 1px 细线上的 2px 红条。 */
+
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+#write h1 {
+    font-family: var(--font-serif);
+    font-size: 1.88rem;
+    margin: 2.2em 0 .9em;
+    padding-bottom: .5em;
+    letter-spacing: .005em;
+    text-wrap: balance;          /* 标题换行时两行均分，不留孤字 */
+    /* 两道背景线同底对齐：1px 通栏细线 + 2px 朱砂短段，避免边框与背景错位 */
+    background-image:
+        linear-gradient(var(--red), var(--red)),
+        linear-gradient(var(--rule), var(--rule));
+    background-repeat: no-repeat;
+    background-size: 3.4em 2px, 100% 1px;
+    background-position: 0 100%, 0 100%;
+}
+
+#write h2 {
+    font-family: var(--font-serif);
+    font-size: 1.42rem;
+    margin: 2.5em 0 .78em;
+    padding-bottom: .42em;
+    text-wrap: balance;
+    background-image:
+        linear-gradient(var(--red), var(--red)),
+        linear-gradient(var(--rule), var(--rule));
+    background-repeat: no-repeat;
+    background-size: 2.1em 2px, 100% 1px;
+    background-position: 0 100%, 0 100%;
+}
+
+/* h3 用朱砂小方块起头，比整行变色更克制 */
+#write h3 {
+    font-size: 1.14rem;
+    margin: 2em 0 .6em;
+}
+#write h3::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: .74em;
+    margin-right: .46em;
+    transform: translateY(-.02em);
+    background: var(--red);
+    border-radius: 2px;
+    opacity: .85;
+}
+/* h3 里的序号/emoji 与方块之间不再叠加空格 */
+#write h3 > span:first-child:not(:only-child) { margin-right: .3em; }
+
+#write h4 {
+    font-size: 1.02rem;
+    margin: 1.7em 0 .45em;
+    letter-spacing: .012em;
+}
+#write h5 {
+    font-size: .95rem;
+    margin: 1.5em 0 .4em;
+    color: var(--ink-3);
+}
+#write h6 {
+    font-size: .9rem;
+    margin: 1.4em 0 .35em;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* ---------- 引用块：当作提示条用 ---------- */
+
+#write blockquote {
+    margin: 1.5em 0;
+    padding: 1em 1.25em;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+    color: var(--ink-2);
+    font-size: .97em;
+}
+#write blockquote p {
+    margin: .35em 0;
+    color: inherit;
+}
+#write blockquote p:first-child { margin-top: 0; }
+#write blockquote p:last-child { margin-bottom: 0; }
+#write blockquote strong { color: var(--red-deep); }
+
+/* ---------- 列表 ---------- */
+
+#write ul, #write ol {
+    margin: .8em 0;
+    padding-left: 1.55em;
+}
+#write li {
+    margin: .34em 0;
+    padding-left: .1em;
+}
+#write li { text-align: var(--p-align, left); }
+#write li > p { margin: .3em 0; }
+#write li > ul, #write li > ol { margin: .3em 0; }
+
+#write ul > li::marker {
+    color: var(--red);
+}
+#write ol > li::marker {
+    color: var(--red-deep);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 任务清单 */
+#write .md-task-list-item > input {
+    accent-color: var(--red);
+    margin-right: .35em;
+}
+#write .task-list-item { list-style: none; }
+
+/* ---------- 表格 ---------- */
+
+#write .table-fig {
+    margin: 1.6em 0;
+    overflow: auto;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+/* 表格：窄表铺满版心；列多时逐级缩小字号与内边距，尽量排进版心，
+   实在排不下才在 .table-fig 内横向滚动（滚动条细，不抢眼）。 */
+#write table {
+    width: auto;
+    min-width: 100%;
+    border-collapse: collapse;
+    font-size: var(--tbl-size, .89rem);
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;   /* 数字等宽，列才能对齐 */
+}
+
+#write table th {
+    background: var(--th-bg);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: .94em;                     /* 随表格字号等比缩放 */
+    text-align: left;
+    padding: var(--tbl-pad, .55em .8em);
+    border-bottom: 1px solid var(--rule-strong);
+    white-space: nowrap;
+}
+
+#write table td {
+    padding: var(--tbl-pad, .55em .8em);
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    min-width: 3.2em;
+    overflow-wrap: break-word;
+}
+
+/* 窄表（≤5 列）每列给足 5.5em，避免「抽象评价堆叠」这种 6 字词被挤成 5+1 */
+#write .table-fig:not(:has(thead th:nth-child(6))) table td {
+    min-width: 5.5em;
+}
+
+/* 列数越多，字越小、边越窄 */
+#write .table-fig:has(thead th:nth-child(7)) { --tbl-size: .80rem;  --tbl-pad: .48em .58em; }
+#write .table-fig:has(thead th:nth-child(9)) { --tbl-size: .74rem;  --tbl-pad: .44em .50em; }
+
+#write table tbody tr:nth-child(even) { background: rgba(255, 255, 255, .018); }
+#write table tbody tr:last-child td { border-bottom: none; }
+#write table tbody tr:hover { background: rgba(224, 106, 81, .045); }
+#write .table-fig::-webkit-scrollbar { height: 8px; }
+#write .table-fig::-webkit-scrollbar-thumb { background: rgba(243, 237, 227, .20); border-radius: 4px; }
+
+/* ---------- 代码 ---------- */
+
+#write code {
+    font-family: var(--font-mono);
+    font-size: .86em;
+    color: var(--red-deep);
+    background: rgba(243, 237, 227, .075);
+    padding: .1em .36em;
+    border-radius: 3px;
+    overflow-wrap: anywhere;      /* 长路径不撑破版心 */
+    word-break: break-word;
+}
+
+#write pre.md-fences {
+    margin: 1.45em 0;
+    padding: .95em 1.15em;
+    background: var(--code-bg);
+    border: 1px solid rgba(243, 237, 227, .10);
+    border-radius: 6px;
+    font-size: .82rem;
+    line-height: 1.62;
+    overflow-x: auto;
+}
+
+#write pre.md-fences code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--ink-2);
+    font-size: 1em;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+#write .md-fences .CodeMirror { font-family: var(--font-mono); }
+
+/* 代码高亮：低饱和，只为可读，不抢正文 */
+#write .cm-s-typora-default .cm-keyword,
+#write .cm-s-inner .cm-keyword   { color: #e8846c; }
+#write .cm-s-typora-default .cm-string,
+#write .cm-s-inner .cm-string     { color: #c9b07a; }
+#write .cm-s-typora-default .cm-comment,
+#write .cm-s-inner .cm-comment    { color: #8a8275; font-style: normal; }
+#write .cm-s-typora-default .cm-number,
+#write .cm-s-inner .cm-number     { color: #7fb6cf; }
+#write .cm-s-typora-default .cm-variable,
+#write .cm-s-inner .cm-variable   { color: var(--ink-2); }
+
+/* ---------- 分隔线：朱砂短线，取代 1px 通栏 ---------- */
+
+#write hr {
+    border: 0;
+    width: 3.2em;
+    height: 2px;
+    margin: 2.7em auto;
+    background: rgba(224, 106, 81, .55);
+    border-radius: 1px;
+}
+
+/* ---------- 图片 / 其他 ---------- */
+
+#write img {
+    max-width: 100%;
+    border-radius: 4px;
+}
+
+#write .md-toc {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1em 1.2em;
+    font-size: .9rem;
+    margin: 1.4em 0;
+}
+#write .md-toc a { text-decoration: none; }
+
+#write pre.md-meta-block {
+    background: var(--paper-2);
+    border: none;
+    border-left: 2px solid var(--rule-strong);
+    border-radius: 0 4px 4px 0;
+    color: var(--muted);
+    font-size: .85rem;
+    padding: .8em 1em;
+    margin-bottom: 2em;
+}
+
+#write kbd {
+    font-family: var(--font-mono);
+    font-size: .82em;
+    padding: .12em .4em;
+    border: 1px solid var(--rule-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: var(--paper-2);
+}
+
+/* 侧栏文字 */
+#typora-sidebar { font-family: var(--font-sans); }
+.file-list-item { font-size: .82rem; }
+.outline-item { font-size: .82rem; }
